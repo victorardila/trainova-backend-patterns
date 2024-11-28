@@ -1,16 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema'; // Esquema de usuario
 import * as mongoose from 'mongoose';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto'; // DTO para la creación de usuarios
 import { UpdateUserDto } from './dto/update-user.dto'; // DTO para la actualización de usuarios
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: mongoose.Model<typeof User>, // Modelo basado en el esquema de usuario
+    private jwtService: JwtService,
   ) {}
 
   async findAll(
@@ -30,16 +37,36 @@ export class UsersService {
 
   // Crear un usuario
   async create(createUserDto: CreateUserDto): Promise<any> {
-    const { username } = createUserDto;
+    const { username, password } = createUserDto;
 
     // Verifica si ya existe un usuario con el mismo nombre de usuario
     const existingUser = await this.userModel.findOne({ username });
     if (existingUser) {
-      throw new Error('Username already exists');
+      throw new ConflictException('Username already exists');
     }
 
-    const createdUser = new this.userModel(createUserDto);
-    return createdUser.save();
+    // Encriptar la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const createdUser = new this.userModel({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+
+    // Guardar el usuario en la base de datos
+    await createdUser.save();
+
+    // Generar un token
+    const token = this.jwtService.sign({
+      id: createdUser._id,
+      username: createUserDto.username,
+    });
+    console.log('Token:', token);
+
+    // Retornar el usuario creado junto con el token
+    return {
+      user: createdUser,
+      token,
+    };
   }
 
   async findById(id: string): Promise<any> {

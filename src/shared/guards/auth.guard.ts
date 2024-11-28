@@ -1,4 +1,3 @@
-// src/shared/guards/auth.guard.ts
 import { Injectable } from '@nestjs/common';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';

@@ -1,12 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({
-    timestamps: true
+  timestamps: true,
 })
+export class Course {
+  @Prop({ required: true })
+  code: string;
 
-export class Course{
   @Prop({ required: true })
   name: string;
 

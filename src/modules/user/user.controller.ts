@@ -7,18 +7,24 @@ import {
   Get,
   Delete,
 } from '@nestjs/common';
-import { UsersService } from './user.service';
+import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto'; // DTO para la creación de usuarios
 import { UpdateUserDto } from './dto/update-user.dto'; // DTO para la actualización de usuarios
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UserService) {}
 
   // Obtener todos los usuarios
+  // Cambia el tipo de retorno a incluir la estructura completa
   @Get()
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<{
+    total: number;
+    page: number;
+    limit: number;
+    data: User[];
+  }> {
     return this.usersService.findAll();
   }
 

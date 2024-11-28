@@ -6,6 +6,7 @@
 - nest-cli.json
 - package-lock.json
 - package.json
+- project_structure.text
 - src
   - app.controller.ts
   - app.module.ts
@@ -13,6 +14,8 @@
   - common
     - object-cleaner.util.ts
   - main.ts
+  - middleware
+    - auth.middleware.ts
   - modules
     - admin
       - .gitkeep
@@ -60,8 +63,8 @@
     - guards
       - auth.guard.ts
       - roles.guard.ts
-    - middleware
-      - auth.middleware.ts
+  - types
+    - express.d.ts
 - test
   - app.e2e-spec.ts
   - jest-e2e.json

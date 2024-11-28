@@ -5,7 +5,7 @@ import * as jwt from 'jsonwebtoken';
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    const token = req.get('x-auth-token'); // Mejor práctica que usar req.header()
+    const token = req.get('x-auth-token'); // Obtener el token desde los headers
     if (!token) {
       return res
         .status(401)
@@ -14,9 +14,10 @@ export class AuthMiddleware implements NestMiddleware {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded; // Reconocido gracias a la extensión de la interfaz Request
+      (req as any).user = decoded; // Asegúrate de usar el typecasting aquí
       next();
-    } catch {
+    } catch (error) {
+      console.error('Token verification error:', error);
       res.status(400).json({ message: 'Invalid token.' });
     }
   }

@@ -1,8 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 
-
 export class CreateCourseDto {
+  @IsString()
+  readonly code: string;
+
   @IsString()
   readonly name: string;
 
@@ -16,5 +18,4 @@ export class CreateCourseDto {
 
   @IsString()
   readonly status: string;
-
 }
