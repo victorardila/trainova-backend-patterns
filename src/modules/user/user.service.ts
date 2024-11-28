@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema'; // Esquema de usuario
 import * as mongoose from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto'; // DTO para la creación de usuarios
+import { UpdateUserDto } from './dto/update-user.dto'; // DTO para la actualización de usuarios
 
 @Injectable()
 export class UsersService {
@@ -11,10 +13,19 @@ export class UsersService {
     private userModel: mongoose.Model<typeof User>, // Modelo basado en el esquema de usuario
   ) {}
 
-  // Obtener todos los usuarios
-  async findAll(): Promise<any[]> {
-    const users = await this.userModel.find();
-    return users;
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ total: number; page: number; limit: number; data: any[] }> {
+    const skip = (page - 1) * limit;
+    const users = await this.userModel.find().skip(skip).limit(limit);
+    const total = await this.userModel.countDocuments();
+    return {
+      total,
+      page,
+      limit,
+      data: users,
+    };
   }
 
   // Crear un usuario
@@ -31,13 +42,20 @@ export class UsersService {
     return createdUser.save();
   }
 
-  // Buscar un usuario por su ID
   async findById(id: string): Promise<any> {
+    if (!isValidObjectId(id)) {
+      throw new NotFoundException('Invalid ID format');
+    }
+
     const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return user;
+
+    return {
+      success: true,
+      data: user,
+    };
   }
 
   // Buscar un usuario por su nombre de usuario (username)
@@ -50,7 +68,7 @@ export class UsersService {
   }
 
   // Actualizar un usuario por su ID
-  async updateById(id: string, updateUserDto: any): Promise<any> {
+  async updateById(id: string, updateUserDto: UpdateUserDto): Promise<any> {
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       updateUserDto,
@@ -77,6 +95,9 @@ export class UsersService {
   // Obtener un usuario por su rol
   async findByRole(role: string): Promise<any[]> {
     const users = await this.userModel.find({ role });
+    if (!users.length) {
+      throw new NotFoundException('No users found with the specified role');
+    }
     return users;
   }
 
@@ -94,18 +115,12 @@ export class UsersService {
   }
 
   // Lógica para construir la jerarquía de roles o relaciones del usuario
-  private async buildRoleHierarchy(userId: string) {
-    // Implementa la lógica de jerarquía según el rol del usuario
-    // Por ejemplo, si los usuarios tienen relaciones jerárquicas, roles o entidades relacionadas
-    const relatedUsers = await this.userModel.find({ parentId: userId }).exec();
-
-    const relatedItems = [];
-
-    for (const relatedUser of relatedUsers) {
-      const relatedUserObject = relatedUser.toObject();
-      relatedItems.push(relatedUserObject);
-    }
-
-    return relatedItems;
+  private async buildRoleHierarchy(userId: string): Promise<any[]> {
+    // Encuentra los usuarios relacionados con el ID proporcionado
+    const relatedUsers = await this.userModel
+      .find({ parentId: userId })
+      .populate('parentId') // Si tienes un campo relacionado
+      .exec();
+    return relatedUsers.map((user) => user.toObject());
   }
 }

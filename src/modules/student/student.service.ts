@@ -1,7 +1,6 @@
-/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Student} from './schemas/student.schema'; // Esquema de estudiante
+import { Student } from './schemas/student.schema'; // Esquema de estudiante
 import * as mongoose from 'mongoose';
 
 @Injectable()
@@ -83,13 +82,16 @@ export class StudentsService {
       const childObject = child.toObject();
 
       // Busca hijos de este estudiante
-      const { subStudents: subSubStudents, relatedItems: subItems } = await this.buildHierarchy(
-        childObject._id.toString(),
-      );
+      const { subStudents: subSubStudents, relatedItems: subItems } =
+        await this.buildHierarchy(childObject._id.toString());
 
       if (subSubStudents.length > 0 || subItems.length > 0) {
         // Si tiene hijos, es un subestudiante
-        subStudents.push({ ...childObject, subStudents: subSubStudents, relatedItems: subItems });
+        subStudents.push({
+          ...childObject,
+          subStudents: subSubStudents,
+          relatedItems: subItems,
+        });
       } else {
         // Si no tiene hijos, es un elemento relacionado
         relatedItems.push({ ...childObject, type: 'relatedItem' });

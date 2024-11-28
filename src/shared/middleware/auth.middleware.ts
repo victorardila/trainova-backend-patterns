@@ -1,16 +1,23 @@
-// src/shared/middleware/auth.middleware.ts
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../interfaces/user.interface';
+import * as jwt from 'jsonwebtoken';
+
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers['authorization'];
-    // Aquí deberías verificar el token JWT y añadir el usuario a la solicitud
-    // Si el token es válido, se añade `req.user`
-    if (token) {
-      req.user = { id: 1, roles: ['admin'] };
+    const token = req.get('x-auth-token'); // Mejor práctica que usar req.header()
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: 'Access denied. No token provided.' });
     }
-    next();
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded; // Reconocido gracias a la extensión de la interfaz Request
+      next();
+    } catch {
+      res.status(400).json({ message: 'Invalid token.' });
+    }
   }
 }
