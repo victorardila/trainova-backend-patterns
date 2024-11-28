@@ -4,8 +4,8 @@ import { CoursesService } from './course.service';
 import { CoursesController } from './course.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CourseSchema } from './schemas/course.schema';
-import { ContentModule } from 'src/content/content.module';
-import { ContentSchema } from 'src/content/schema/content.schema';
+import { ContentModule } from 'src/modules/content/content.module';
+import { ContentSchema } from 'src/modules/content/schema/content.schema';
 
 
 @Module({

@@ -1,15 +1,13 @@
-/* eslint-disable prettier/prettier */
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { User } from '../../user/schemas/user.schema';
+import { Schema as MongooseSchema } from 'mongoose';
 
 @Schema({
   timestamps: true,
 })
 export class Student {
   @Prop({ required: true })
-  id: string;
-
-  @Prop({ required: true })
-  name: string;
+  money: number;
 
   @Prop({ required: true })
   academicProgram: string;
@@ -23,14 +21,8 @@ export class Student {
   @Prop({ required: true })
   creditosAcumulados: number;
 
-  @Prop({ required: true, unique: true })
-  username: string;
-
-  @Prop({ required: true })
-  password: string;
-
-  @Prop({ required: true })
-  money: number;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
+  user: User;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);

@@ -1,5 +1,10 @@
-/* eslint-disable prettier/prettier */
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateStudentDto {
   @IsString()
@@ -9,6 +14,7 @@ export class CreateStudentDto {
   @IsString()
   @IsNotEmpty()
   readonly name: string;
+
   @IsString()
   @IsNotEmpty()
   readonly username: string;
@@ -20,24 +26,22 @@ export class CreateStudentDto {
   @IsNumber()
   @IsNotEmpty()
   readonly money: number;
-  
+
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  readonly academicProgram: string;
+  readonly academicProgram?: string;
 
   @IsOptional()
-  @IsEnum(['beca', 'votaciones', 'descendencia'], { message: 'Invalid discount type' })
-  @IsNotEmpty()
-  readonly tipoDescuento: string;
-
-  @IsOptional()
-  @IsNumber()
-  @IsNotEmpty()
-  readonly saldoPagar: number;
+  @IsEnum(['beca', 'votaciones', 'descendencia'], {
+    message: 'Invalid discount type',
+  })
+  readonly tipoDescuento?: string;
 
   @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
-  readonly creditosAcumulados: number;
+  readonly saldoPagar?: number;
+
+  @IsOptional()
+  @IsNumber()
+  readonly creditosAcumulados?: number;
 }

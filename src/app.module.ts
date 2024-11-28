@@ -2,10 +2,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CourseModule } from './course/course.module';
+import { CourseModule } from './modules/course/course.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ContentModule } from './content/content.module';
+import { ContentModule } from './modules/content/content.module';
 
 @Module({
   imports: [

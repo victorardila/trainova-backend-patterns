@@ -1,0 +1,69 @@
+- .env
+- .eslintrc.js
+- .gitignore
+- .prettierrc
+- README.md
+- nest-cli.json
+- package-lock.json
+- package.json
+- src
+  - app.controller.ts
+  - app.module.ts
+  - app.service.ts
+  - common
+    - object-cleaner.util.ts
+  - main.ts
+  - modules
+    - admin
+      - .gitkeep
+    - content
+      - content.controller.ts
+      - content.module.ts
+      - content.service.ts
+      - dto
+        - create-content.dto.ts
+        - update-content.dto.ts
+      - interfaces
+        - content.interface.ts
+      - schema
+        - content.schema.ts
+    - course
+      - course.controller.ts
+      - course.module.ts
+      - course.service.ts
+      - dto
+        - create-course.dto.ts
+        - update-course.dto.ts
+      - schemas
+        - course.schema.ts
+    - student
+      - dto
+        - create-student.dto.ts
+        - update-student.dto.ts
+      - schemas
+        - student.schema.ts
+      - student.controller.ts
+      - student.module.ts
+      - student.service.ts
+    - teacher
+      - .gitkeep
+    - user
+      - dto
+        - create-user.dto.ts
+        - update-user.dto.ts
+      - schemas
+        - user.schema.ts
+      - user.controller.ts
+      - user.module.ts
+      - user.service.ts
+  - shared
+    - guards
+      - auth.guard.ts
+      - roles.guard.ts
+    - middleware
+      - auth.middleware.ts
+- test
+  - app.e2e-spec.ts
+  - jest-e2e.json
+- tsconfig.build.json
+- tsconfig.json

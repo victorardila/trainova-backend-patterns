@@ -1,5 +1,12 @@
-/* eslint-disable prettier/prettier */
-import { Controller, Put, Param, Body, Post, Get, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Put,
+  Param,
+  Body,
+  Post,
+  Get,
+  Delete,
+} from '@nestjs/common';
 import { StudentsService } from './student.service';
 import { Student } from './schemas/student.schema';
 import { CreateStudentDto } from './dto/create-student.dto';
